@@ -1,0 +1,1635 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <script>
+    (function () {
+        try {
+            var saved = localStorage.getItem("lang");
+            if (saved === "fa") {
+                document.documentElement.lang = "fa";
+                document.documentElement.dir = "rtl";
+            }
+        } catch (e) {}
+    })();
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amirxd — PocketMine-MP 5 Plugin Developer</title>
+
+    <meta name="description" content="Amirxd — PocketMine-MP 5 plugin developer. Creator of UltraRequest and PMMPTelegram.">
+    <meta name="author" content="Amirxd">
+    <meta name="theme-color" content="#04070d">
+
+    <meta property="og:title" content="Amirxd — PocketMine-MP 5 Plugin Developer">
+    <meta property="og:description" content="Creator of UltraRequest and PMMPTelegram. Custom plugins, virions and server tools for Minecraft Bedrock.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://amirxdcy4455.github.io">
+    <meta property="og:image" content="https://github.com/amirxdcy4455.png">
+
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Vazirmatn:wght@300;400;500;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg: #04070d;
+            --bg-2: #071019;
+            --card: rgba(8, 16, 27, 0.72);
+            --card-2: rgba(4, 10, 18, 0.9);
+            --line: rgba(34, 211, 238, 0.16);
+            --line-strong: rgba(34, 211, 238, 0.45);
+            --aqua: #22d3ee;
+            --cyan: #06b6d4;
+            --teal: #2dd4bf;
+            --blue: #38bdf8;
+            --green: #4ade80;
+            --text: #e8f7ff;
+            --muted: #93b4c6;
+            --dark: #031017;
+            --shadow: 0 0 30px rgba(34, 211, 238, 0.15);
+            --shadow-strong: 0 0 45px rgba(34, 211, 238, 0.28);
+            --mono: 'JetBrains Mono', Consolas, monospace;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; color-scheme: dark; }
+
+        body {
+            font-family: 'Vazirmatn', sans-serif;
+            background:
+                radial-gradient(circle at top right, rgba(34, 211, 238, 0.10), transparent 28%),
+                radial-gradient(circle at bottom left, rgba(45, 212, 191, 0.08), transparent 25%),
+                linear-gradient(180deg, var(--bg), var(--bg-2));
+            color: var(--text);
+            overflow-x: hidden;
+        }
+
+        ::selection { background: rgba(34, 211, 238, 0.3); color: #fff; }
+
+        a { color: inherit; text-decoration: none; }
+        button { font-family: inherit; }
+
+        a:focus-visible, button:focus-visible {
+            outline: 2px solid var(--aqua);
+            outline-offset: 3px;
+            border-radius: 8px;
+        }
+
+        .en { font-family: 'Orbitron', sans-serif; direction: ltr; unicode-bidi: embed; }
+        .mono { font-family: var(--mono); }
+        .container { width: min(1180px, 92%); margin: auto; }
+
+        #progressBar {
+            position: fixed; top: 0; right: 0; height: 3px; width: 0%;
+            background: linear-gradient(90deg, var(--aqua), var(--teal), var(--blue));
+            box-shadow: 0 0 18px rgba(34, 211, 238, 0.75);
+            z-index: 9999;
+        }
+
+        #bgCanvas { position: fixed; inset: 0; z-index: -2; }
+
+        .overlay {
+            position: fixed; inset: 0; z-index: -1; pointer-events: none;
+            background:
+                linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+            background-size: 42px 42px;
+            -webkit-mask-image: radial-gradient(circle at center, black 0%, transparent 80%);
+            mask-image: radial-gradient(circle at center, black 0%, transparent 80%);
+        }
+
+        header {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            background: rgba(4, 7, 13, 0.72);
+            border-bottom: 1px solid var(--line);
+        }
+
+        .nav { display: flex; align-items: center; justify-content: space-between; padding: 15px 0; gap: 16px; }
+
+        .logo {
+            font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 1.15rem;
+            color: var(--aqua); text-shadow: 0 0 18px rgba(34, 211, 238, 0.45);
+            letter-spacing: 1px; direction: ltr;
+        }
+        .logo span { color: #fff; }
+
+        .nav-links { display: flex; align-items: center; gap: 20px; overflow-x: auto; scrollbar-width: none; }
+        .nav-links::-webkit-scrollbar { display: none; }
+
+        .nav-links a {
+            color: var(--muted); font-size: 0.95rem; white-space: nowrap;
+            transition: 0.25s; position: relative;
+        }
+        .nav-links a:hover, .nav-links a.active { color: var(--aqua); }
+        .nav-links a::after {
+            content: ""; position: absolute; bottom: -7px; right: 0; width: 0; height: 2px;
+            background: var(--aqua); box-shadow: 0 0 12px var(--aqua); transition: 0.25s;
+        }
+        .nav-links a:hover::after, .nav-links a.active::after { width: 100%; }
+
+        .nav-actions { display: flex; align-items: center; gap: 10px; }
+
+        .lang-btn {
+            background: rgba(34, 211, 238, 0.06); border: 1px solid var(--line);
+            color: var(--aqua); padding: 10px 14px; border-radius: 12px; cursor: pointer;
+            font-weight: 700; transition: 0.25s; white-space: nowrap; min-width: 88px;
+        }
+        .lang-btn:hover { border-color: var(--line-strong); box-shadow: var(--shadow); }
+
+        .nav-cta {
+            padding: 10px 16px; border-radius: 12px; border: 1px solid var(--line-strong);
+            color: var(--aqua) !important; background: rgba(34, 211, 238, 0.06);
+            box-shadow: var(--shadow); white-space: nowrap;
+        }
+
+        .hero { min-height: 100vh; display: flex; align-items: center; padding: 135px 0 90px; position: relative; }
+
+        .hero-grid { display: grid; grid-template-columns: 1.12fr 0.88fr; gap: 28px; align-items: center; }
+
+        .kicker { display: flex; align-items: center; gap: 14px; color: var(--aqua); font-size: 0.8rem; letter-spacing: 2px; direction: ltr; }
+        html[dir="rtl"] .kicker { direction: rtl; }
+        .kicker-line { width: 38px; height: 2px; background: linear-gradient(90deg, var(--aqua), transparent); box-shadow: 0 0 10px var(--aqua); flex-shrink: 0; }
+
+        .badge {
+            display: inline-flex; align-items: center; gap: 10px; padding: 9px 15px;
+            border-radius: 999px; border: 1px solid var(--line);
+            background: rgba(34, 211, 238, 0.06); color: var(--aqua);
+            font-size: 0.9rem; box-shadow: var(--shadow); margin-top: 18px;
+        }
+        .badge .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--green); box-shadow: 0 0 12px var(--green); animation: pulse 2s infinite; }
+
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+        .hero h1 { font-size: clamp(2.3rem, 5vw, 4.2rem); line-height: 1.14; margin: 20px 0 12px; font-weight: 800; }
+
+        .hl { color: var(--aqua); text-shadow: 0 0 28px rgba(34, 211, 238, 0.6); }
+        .hl.en { font-family: 'Orbitron', sans-serif; }
+
+        .hero-subtitle { color: var(--aqua); font-size: clamp(1rem, 2vw, 1.22rem); margin-bottom: 18px; min-height: 40px; text-shadow: 0 0 18px rgba(34, 211, 238, 0.25); }
+        html[dir="ltr"] .hero-subtitle { font-family: 'Orbitron', sans-serif; direction: ltr; text-align: left; }
+        html[dir="rtl"] .hero-subtitle { direction: rtl; text-align: right; font-weight: 700; }
+
+        #typed::after { content: "|"; color: var(--aqua); animation: blink 1s steps(1) infinite; margin-inline-start: 3px; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+        .hero p { color: var(--muted); line-height: 2.05; max-width: 700px; font-size: 1.02rem; }
+
+        .hero-buttons { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 28px; }
+
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+            padding: 14px 22px; border-radius: 14px; font-weight: 700; transition: 0.25s;
+            cursor: pointer; border: none; position: relative; overflow: hidden;
+        }
+        .btn::after {
+            content: ""; position: absolute; top: 0; left: -80%; width: 50%; height: 100%;
+            background: linear-gradient(105deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+            transform: skewX(-20deg); transition: left 0.55s;
+        }
+        .btn:hover::after { left: 135%; }
+
+        .btn-primary { background: linear-gradient(90deg, var(--cyan), var(--teal)); color: var(--dark); box-shadow: var(--shadow); }
+        .btn-primary:hover { transform: translateY(-3px); box-shadow: var(--shadow-strong); }
+
+        .btn-ghost { border: 1px solid var(--line); background: rgba(255, 255, 255, 0.03); color: var(--text); }
+        .btn-ghost:hover { border-color: var(--line-strong); color: var(--aqua); transform: translateY(-3px); }
+
+        .hero-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 30px; }
+
+        .stat {
+            background: var(--card); border: 1px solid var(--line); border-radius: 18px;
+            padding: 16px 12px; text-align: center; backdrop-filter: blur(10px); transition: 0.25s;
+        }
+        .stat:hover { border-color: var(--line-strong); transform: translateY(-4px); }
+        .stat b {
+            display: block; font-family: 'Orbitron', sans-serif; color: var(--aqua);
+            font-size: 1.35rem; margin-bottom: 6px; text-shadow: 0 0 16px rgba(34, 211, 238, 0.25);
+        }
+        .stat span { color: var(--muted); font-size: 0.86rem; }
+
+        .terminal-card {
+            background: var(--card-2); border: 1px solid var(--line); border-radius: 24px;
+            overflow: hidden; box-shadow: var(--shadow-strong); transform: rotate(0.5deg);
+            direction: ltr; position: relative;
+        }
+        .terminal-card::after {
+            content: ""; position: absolute; inset: 0; pointer-events: none; border-radius: inherit;
+            background: repeating-linear-gradient(0deg, rgba(255,255,255,0.025) 0 1px, transparent 1px 3px);
+        }
+
+        .terminal-bar { display: flex; align-items: center; gap: 8px; padding: 15px 16px; background: rgba(255, 255, 255, 0.03); border-bottom: 1px solid var(--line); }
+        .terminal-dot { width: 12px; height: 12px; border-radius: 50%; }
+        .red { background: #ff5f56; } .yellow { background: #ffbd2e; } .green { background: #27c93f; }
+        .terminal-title { margin-right: auto; margin-left: 10px; color: var(--muted); font-size: 0.82rem; font-family: var(--mono); }
+
+        .terminal-body {
+            padding: 24px; direction: ltr; text-align: left; font-family: var(--mono);
+            font-size: 0.92rem; line-height: 2.1; min-height: 350px;
+        }
+        .cmdline { color: #fff; }
+        .srv { color: var(--muted); }
+        .srv b { color: var(--aqua); font-weight: 400; }
+        .okline { color: var(--green); }
+        .out-w { color: #fff; text-shadow: 0 0 14px rgba(34, 211, 238, 0.4); }
+        .cursor { display: inline-block; width: 9px; height: 1.05em; background: var(--aqua); vertical-align: text-bottom; animation: blink 1s steps(1) infinite; box-shadow: 0 0 10px var(--aqua); }
+
+        .scroll-hint { position: absolute; bottom: 26px; left: 50%; transform: translateX(-50%); width: 26px; height: 42px; border: 2px solid var(--line-strong); border-radius: 16px; display: flex; justify-content: center; padding-top: 7px; transition: 0.25s; }
+        .scroll-hint span { width: 4px; height: 8px; border-radius: 4px; background: var(--aqua); box-shadow: 0 0 8px var(--aqua); animation: drop 1.6s infinite; }
+        .scroll-hint:hover { border-color: var(--aqua); }
+        @keyframes drop { 0% { transform: translateY(0); opacity: 1; } 70% { transform: translateY(12px); opacity: 0; } 100% { opacity: 0; } }
+
+        .ticker { overflow: hidden; border-block: 1px solid var(--line); background: rgba(255, 255, 255, 0.02); direction: ltr; }
+        .ticker-track { display: flex; width: max-content; animation: tick 30s linear infinite; }
+        .ticker:hover .ticker-track { animation-play-state: paused; }
+        .tk-group { display: flex; align-items: center; gap: 26px; padding: 13px 13px; white-space: nowrap; }
+        .tk { font-family: var(--mono); color: var(--muted); font-size: 0.82rem; letter-spacing: 1.5px; text-transform: uppercase; }
+        .tk-sep { color: var(--aqua); text-shadow: 0 0 10px rgba(34, 211, 238, 0.6); }
+        @keyframes tick { to { transform: translateX(-50%); } }
+
+        section { padding: 92px 0; position: relative; scroll-margin-top: 90px; }
+
+        .section-head { margin-bottom: 38px; }
+        .section-tag { font-family: 'Orbitron', sans-serif; color: var(--aqua); letter-spacing: 3px; font-size: 0.78rem; direction: ltr; display: inline-block; text-transform: uppercase; }
+        html[dir="rtl"] .section-tag { font-family: 'Vazirmatn', sans-serif; letter-spacing: 0; font-weight: 700; font-size: 0.9rem; }
+        .section-head h2 { font-size: clamp(1.9rem, 4vw, 2.9rem); margin-top: 10px; font-weight: 800; }
+        .section-head p { color: var(--muted); margin-top: 12px; max-width: 760px; line-height: 2; }
+
+        .card {
+            background: var(--card); border: 1px solid var(--line); border-radius: 24px;
+            padding: 24px; transition: 0.28s; position: relative; overflow: hidden;
+            backdrop-filter: blur(12px);
+        }
+        .card::before {
+            content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: 0.28s;
+            background: radial-gradient(circle at top right, rgba(34, 211, 238, 0.10), transparent 35%);
+        }
+        .card::after {
+            content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: 0.3s;
+            background:
+                linear-gradient(var(--aqua), var(--aqua)) top right / 20px 2px,
+                linear-gradient(var(--aqua), var(--aqua)) top right / 2px 20px,
+                linear-gradient(var(--aqua), var(--aqua)) bottom left / 20px 2px,
+                linear-gradient(var(--aqua), var(--aqua)) bottom left / 2px 20px;
+            background-repeat: no-repeat;
+        }
+        .card:hover { transform: translateY(-7px); border-color: var(--line-strong); box-shadow: var(--shadow-strong); }
+        .card:hover::before, .card:hover::after { opacity: 1; }
+
+        .card-icon {
+            width: 56px; height: 56px; border-radius: 18px; display: grid; place-items: center;
+            font-size: 1.5rem; background: rgba(34, 211, 238, 0.08); border: 1px solid var(--line);
+            margin-bottom: 18px; box-shadow: var(--shadow); flex-shrink: 0;
+        }
+        .card h3 { font-size: 1.18rem; margin-bottom: 12px; }
+        .card p { color: var(--muted); line-height: 1.95; font-size: 0.96rem; }
+        .card .small-en { direction: ltr; text-align: left; font-family: var(--mono); color: var(--aqua); font-size: 0.8rem; margin-bottom: 8px; letter-spacing: 1px; }
+        html[dir="rtl"] .card .small-en { text-align: right; }
+
+        .tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+        .tag { padding: 7px 11px; border-radius: 999px; font-size: 0.76rem; color: var(--aqua); border: 1px solid var(--line); background: rgba(34, 211, 238, 0.05); }
+
+        .card-link { display: inline-flex; align-items: center; gap: 8px; margin-top: 20px; color: var(--aqua); font-weight: 700; transition: 0.25s; cursor: pointer; }
+        .card-link:hover { gap: 14px; }
+
+        .about-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 18px; }
+        .about-card { padding: 28px; }
+        .about-card h3 { margin-bottom: 16px; font-size: 1.35rem; }
+        .about-card p { color: var(--muted); line-height: 2.1; margin-bottom: 14px; }
+
+        .info-list { display: grid; gap: 12px; margin-top: 18px; }
+        .info-item {
+            display: flex; justify-content: space-between; align-items: center; gap: 12px;
+            padding: 13px 15px; border-radius: 14px; border: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.02); color: var(--muted); transition: 0.2s;
+        }
+        .info-item:hover { border-color: var(--line-strong); }
+        .info-item b { color: var(--text); }
+
+        .bento { display: grid; grid-template-columns: repeat(12, 1fr); gap: 16px; }
+        .span-3 { grid-column: span 3; } .span-4 { grid-column: span 4; }
+        .span-5 { grid-column: span 5; } .span-6 { grid-column: span 6; }
+        .span-7 { grid-column: span 7; } .span-12 { grid-column: span 12; }
+
+        .skill-top { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin-bottom: 14px; }
+        .skill-top b { font-size: 1rem; }
+        .skill-num { font-family: 'Orbitron', sans-serif; color: var(--aqua); font-size: 1.35rem; text-shadow: 0 0 14px rgba(34, 211, 238, 0.35); direction: ltr; }
+
+        .bar { width: 100%; height: 9px; border-radius: 999px; background: rgba(255, 255, 255, 0.08); overflow: hidden; }
+        .bar span {
+            display: block; height: 100%; width: 0; border-radius: 999px;
+            background: linear-gradient(90deg, var(--cyan), var(--teal), var(--blue));
+            box-shadow: 0 0 14px rgba(34, 211, 238, 0.45); transition: width 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .skill small { display: block; margin-top: 10px; color: var(--muted); font-size: 0.78rem; }
+        .skill-desc { margin-top: 12px; font-size: 0.88rem !important; }
+        .skill.featured { border-color: rgba(34, 211, 238, 0.3); }
+
+        .libs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+
+        .lib-head { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 16px; }
+        .lib-head .card-icon { margin-bottom: 0; }
+        .lib-badge {
+            margin-inline-start: auto; padding: 6px 12px; border-radius: 999px; font-size: 0.72rem;
+            color: var(--aqua); border: 1px solid var(--line-strong); background: rgba(34, 211, 238, 0.08);
+            white-space: nowrap; box-shadow: var(--shadow);
+        }
+
+        .repo-stats { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; color: var(--muted); font-size: 0.85rem; }
+        .repo-stats span { padding: 7px 10px; border-radius: 12px; border: 1px solid var(--line); background: rgba(255, 255, 255, 0.02); }
+
+        .clone {
+            display: flex; align-items: center; gap: 10px; margin-top: 18px; padding: 12px 14px;
+            border-radius: 14px; border: 1px solid var(--line); background: rgba(3, 8, 14, 0.85);
+            direction: ltr; overflow-x: auto; scrollbar-width: none;
+        }
+        .clone::-webkit-scrollbar { display: none; }
+        .clone code { font-family: var(--mono); font-size: 0.78rem; color: var(--teal); white-space: nowrap; flex: 1; }
+        .copy-btn {
+            background: rgba(34, 211, 238, 0.08); border: 1px solid var(--line); color: var(--aqua);
+            border-radius: 10px; width: 34px; height: 34px; cursor: pointer; transition: 0.2s; flex-shrink: 0;
+        }
+        .copy-btn:hover { border-color: var(--line-strong); box-shadow: var(--shadow); }
+
+        .repo-toolbar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px; margin-bottom: 22px; }
+        .repo-filters { display: flex; flex-wrap: wrap; gap: 10px; }
+        .repo-filter {
+            padding: 9px 18px; border-radius: 999px; border: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.02); color: var(--muted); cursor: pointer;
+            font-weight: 700; font-size: 0.85rem; transition: 0.2s;
+        }
+        .repo-filter:hover { border-color: var(--line-strong); color: var(--aqua); }
+        .repo-filter.active { background: rgba(34, 211, 238, 0.12); border-color: var(--line-strong); color: var(--aqua); box-shadow: var(--shadow); }
+        .repo-count { font-family: var(--mono); color: var(--muted); font-size: 0.85rem; direction: ltr; }
+
+        .repo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+        .repo-loading { grid-column: 1 / -1; text-align: center; color: var(--muted); padding: 46px 0; font-size: 0.95rem; }
+
+        .repo-card { display: flex; flex-direction: column; }
+        .repo-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
+        .repo-name { font-size: 1.02rem; color: var(--text); word-break: break-word; }
+        .repo-fork-badge {
+            padding: 4px 10px; border-radius: 999px; font-size: 0.68rem; white-space: nowrap;
+            color: var(--muted); border: 1px solid var(--line); background: rgba(255, 255, 255, 0.02);
+        }
+        .repo-desc { color: var(--muted); font-size: 0.9rem; line-height: 1.85; min-height: 50px; flex: 1; }
+        .repo-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; margin-top: 16px; color: var(--muted); font-size: 0.8rem; font-family: var(--mono); direction: ltr; }
+        html[dir="rtl"] .repo-meta { justify-content: flex-end; }
+        .repo-lang { display: inline-flex; align-items: center; gap: 6px; }
+        .lang-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+        .repo-updated { color: var(--muted); opacity: 0.8; }
+        .repo-more { text-align: center; margin-top: 28px; }
+
+        .banner-card { display: flex; align-items: center; gap: 22px; flex-wrap: wrap; margin-top: 20px; }
+        .banner-text { flex: 1; min-width: 260px; }
+        .banner-text h3 { margin-bottom: 8px; }
+
+        .contact-box {
+            background:
+                radial-gradient(circle at top left, rgba(34, 211, 238, 0.12), transparent 30%),
+                var(--card);
+            border: 1px solid var(--line); border-radius: 30px; padding: 42px 28px;
+            text-align: center; box-shadow: var(--shadow-strong);
+        }
+        .contact-box h2 { font-size: clamp(1.8rem, 4vw, 2.7rem); margin-bottom: 14px; }
+        .contact-box > p { color: var(--muted); max-width: 720px; margin: auto; line-height: 2.05; }
+
+        .contact-buttons { display: flex; justify-content: center; flex-wrap: wrap; gap: 14px; margin-top: 28px; }
+        .contact-note { margin-top: 16px; color: var(--muted); font-size: 0.9rem; }
+
+        .contact-ids { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 24px; }
+        .contact-id { border: 1px solid var(--line); background: rgba(255, 255, 255, 0.02); border-radius: 16px; padding: 16px; transition: 0.2s; }
+        .contact-id:hover { border-color: var(--line-strong); transform: translateY(-3px); }
+        .contact-id span { display: block; color: var(--muted); font-size: 0.85rem; margin-bottom: 8px; }
+        .contact-id b { color: var(--aqua); direction: ltr; display: block; font-family: var(--mono); margin-bottom: 12px; }
+        .id-action {
+            display: inline-block; padding: 8px 16px; border-radius: 10px; font-size: 0.82rem; font-weight: 700;
+            border: 1px solid var(--line); color: var(--text); background: rgba(34, 211, 238, 0.05);
+            cursor: pointer; transition: 0.2s;
+        }
+        .id-action:hover { border-color: var(--line-strong); color: var(--aqua); }
+
+        footer { border-top: 1px solid var(--line); padding: 26px 0; text-align: center; color: var(--muted); background: rgba(3, 7, 13, 0.72); }
+        footer .heart { color: var(--aqua); }
+
+        #toast {
+            position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px);
+            background: rgba(4, 10, 18, 0.95); border: 1px solid var(--line-strong); color: var(--text);
+            padding: 12px 20px; border-radius: 14px; opacity: 0; pointer-events: none; transition: 0.3s;
+            z-index: 9999; box-shadow: var(--shadow-strong); text-align: center; max-width: 90%;
+        }
+        #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+        #toTop {
+            position: fixed; bottom: 22px; inset-inline-end: 22px; width: 46px; height: 46px;
+            border-radius: 14px; border: 1px solid var(--line-strong); background: rgba(4, 10, 18, 0.9);
+            color: var(--aqua); font-size: 1.2rem; cursor: pointer; opacity: 0; pointer-events: none;
+            transform: translateY(10px); transition: 0.3s; z-index: 900; box-shadow: var(--shadow);
+        }
+        #toTop.show { opacity: 1; pointer-events: auto; transform: none; }
+        #toTop:hover { box-shadow: var(--shadow-strong); }
+
+        .reveal { opacity: 0; transform: translateY(26px); transition: 0.75s ease; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        @keyframes hueSpin { to { filter: hue-rotate(360deg); } }
+        .overdrive .card, .overdrive .terminal-card, .overdrive .btn-primary, .overdrive .stat { animation: hueSpin 2s linear infinite; }
+
+        @media (max-width: 1050px) {
+            .hero-grid, .about-grid { grid-template-columns: 1fr; }
+            .libs-grid { grid-template-columns: 1fr; }
+            .bento > * { grid-column: span 6 !important; }
+            .bento > .featured, .bento > .banner-card { grid-column: span 12 !important; }
+            .hero-stats { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 760px) {
+            .nav-links { display: none; }
+            .hero { padding-top: 115px; }
+            .bento > * { grid-column: span 12 !important; }
+            .hero-stats, .contact-ids { grid-template-columns: 1fr; }
+            .terminal-card { transform: none; }
+            .contact-box { padding: 30px 18px; }
+            .scroll-hint { display: none; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+            html { scroll-behavior: auto; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="progressBar"></div>
+    <canvas id="bgCanvas"></canvas>
+    <div class="overlay"></div>
+    <div id="toast" aria-live="polite"></div>
+    <button id="toTop" type="button" aria-label="Back to top">↑</button>
+
+    <header>
+        <div class="container nav">
+            <a href="#home" class="logo">AMIR<span>XD</span></a>
+
+            <nav class="nav-links">
+                <a href="#home" data-i18n="nav.home">Home</a>
+                <a href="#about" data-i18n="nav.about">About</a>
+                <a href="#skills" data-i18n="nav.skills">Skills</a>
+                <a href="#libraries" data-i18n="nav.libraries">Libraries</a>
+                <a href="#projects" data-i18n="nav.projects">Projects</a>
+                <a href="#contact" data-i18n="nav.contact">Contact</a>
+            </nav>
+
+            <div class="nav-actions">
+                <button id="langToggle" class="lang-btn" type="button">فارسی</button>
+                <a class="nav-cta" href="https://github.com/amirxdcy4455" target="_blank" rel="noopener noreferrer" data-i18n="nav.github">GitHub</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+
+        <section class="hero" id="home">
+            <div class="container hero-grid">
+
+                <div class="reveal">
+                    <div class="kicker mono">
+                        <span class="kicker-line"></span>
+                        <span data-i18n="hero.kicker">POCKETMINE-MP 5 // PLUGIN DEVELOPER</span>
+                    </div>
+
+                    <div class="badge">
+                        <span class="dot"></span>
+                        <span data-i18n="hero.badge">Available for new projects</span>
+                    </div>
+
+                    <h1 data-i18n-html="hero.title">
+                        Hi, I'm <span class="hl">Amir</span>
+                        <br>
+                        known as <span class="hl en">Amirxd</span>
+                    </h1>
+
+                    <div class="hero-subtitle"><span id="typed"></span></div>
+
+                    <p data-i18n-html="hero.desc">
+                        PocketMine-MP 5 plugin developer with about <b>2.5 years</b> of experience.
+                        I build useful plugins and libraries for <span class="en">Minecraft Bedrock</span> servers —
+                        <span class="en">HTTP clients</span>, <span class="en">Telegram bots</span>, economy systems,
+                        minigames and server-side tools.
+                    </p>
+
+                    <div class="hero-buttons">
+                        <a class="btn btn-primary" href="#libraries" data-i18n="hero.viewLibraries">View Libraries</a>
+                        <a class="btn btn-ghost" href="https://github.com/amirxdcy4455" target="_blank" rel="noopener noreferrer" data-i18n="hero.github">GitHub Profile</a>
+                        <a class="btn btn-ghost" href="#contact" data-i18n="hero.order">Order Project</a>
+                    </div>
+
+                    <div class="hero-stats reveal">
+                        <div class="stat"><b data-count="15">0</b><span data-i18n="hero.stat.age">Age / Level</span></div>
+                        <div class="stat"><b data-count="2.5" data-decimals="1" data-suffix="+">0</b><span data-i18n="hero.stat.experience">Years Experience</span></div>
+                        <div class="stat"><b data-count="2">0</b><span data-i18n="hero.stat.libraries">Public Libraries</span></div>
+                        <div class="stat"><b class="en">PMMP5</b><span data-i18n="hero.stat.focus">Main Focus</span></div>
+                    </div>
+                </div>
+
+                <div class="reveal">
+                    <div class="terminal-card">
+                        <div class="terminal-bar">
+                            <span class="terminal-dot red"></span>
+                            <span class="terminal-dot yellow"></span>
+                            <span class="terminal-dot green"></span>
+                            <span class="terminal-title">amirxd@pmmp:~/server</span>
+                        </div>
+                        <div class="terminal-body" id="termBody"></div>
+                    </div>
+                </div>
+
+            </div>
+
+            <a class="scroll-hint" href="#about" aria-label="Scroll down"><span></span></a>
+        </section>
+
+        <div class="ticker" aria-hidden="true">
+            <div class="ticker-track">
+                <div class="tk-group">
+                    <span class="tk">PHP 8</span><span class="tk-sep">⚡</span>
+                    <span class="tk">PocketMine-MP 5</span><span class="tk-sep">⚡</span>
+                    <span class="tk">Virion</span><span class="tk-sep">⚡</span>
+                    <span class="tk">Plugin Development</span><span class="tk-sep">⚡</span>
+                    <span class="tk">Minecraft Bedrock</span><span class="tk-sep">⚡</span>
+                    <span class="tk">Telegram Bot API</span><span class="tk-sep">⚡</span>
+                    <span class="tk">HTTP Client</span><span class="tk-sep">⚡</span>
+                    <span class="tk">Async Tasks</span><span class="tk-sep">⚡</span>
+                    <span class="tk">OOP</span><span class="tk-sep">⚡</span>
+                    <span class="tk">SQLite &amp; MySQL</span><span class="tk-sep">⚡</span>
+                    <span class="tk">Git &amp; GitHub</span><span class="tk-sep">⚡</span>
+                    <span class="tk">Forms UI</span><span class="tk-sep">⚡</span>
+                </div>
+                <div class="tk-group">
+                    <span class="tk">PHP 8</span><span class="tk-sep">⚡</span>
+                    <span class="tk">PocketMine-MP 5</span><span class="tk-sep">⚡</span>
+                    <span class="tk">Virion</span><span class="tk-sep">⚡</span>
+                    <span class="tk">Plugin Development</span><span class="tk-sep">⚡</span>
+                    <span class="tk">Minecraft Bedrock</span><span class="tk-sep">⚡</span>
+                    <span class="tk">Telegram Bot API</span><span class="tk-sep">⚡</span>
+                    <span class="tk">HTTP Client</span><span class="tk-sep">⚡</span>
+                    <span class="tk">Async Tasks</span><span class="tk-sep">⚡</span>
+                    <span class="tk">OOP</span><span class="tk-sep">⚡</span>
+                    <span class="tk">SQLite &amp; MySQL</span><span class="tk-sep">⚡</span>
+                    <span class="tk">Git &amp; GitHub</span><span class="tk-sep">⚡</span>
+                    <span class="tk">Forms UI</span><span class="tk-sep">⚡</span>
+                </div>
+            </div>
+        </div>
+
+        <section id="about">
+            <div class="container">
+                <div class="section-head reveal">
+                    <span class="section-tag" data-i18n="about.tag">ABOUT ME</span>
+                    <h2 data-i18n="about.title">About Me</h2>
+                    <p data-i18n-html="about.subtitle">
+                        I'm Amir — a <span class="en">PocketMine-MP</span> plugin developer who, despite his young age, takes real, clean and useful projects seriously.
+                    </p>
+                </div>
+
+                <div class="about-grid">
+                    <div class="card about-card reveal">
+                        <h3 data-i18n-html="about.card1.title">Who is <span class="en">Amirxd</span>?</h3>
+
+                        <p data-i18n-html="about.card1.p1">
+                            I've been active in the <span class="en">PocketMine-MP</span> ecosystem for about 2.5 years.
+                            My main focus is custom plugins, reusable libraries, communication tools like
+                            <span class="en">HTTP clients</span> and the <span class="en">Telegram Bot API</span>, and server-side systems.
+                        </p>
+
+                        <p data-i18n-html="about.card1.p2">
+                            I may not call myself a full specialist yet — but in practice I'm serious about clean code,
+                            problem solving, modular structure and actually usable projects. My goal is simple:
+                            build tools that <span class="en">PMMP</span> developers really benefit from.
+                        </p>
+
+                        <div class="tags">
+                            <span class="tag" data-i18n="tag.php">PHP</span>
+                            <span class="tag" data-i18n="tag.pmmp5">PocketMine-MP 5</span>
+                            <span class="tag" data-i18n="tag.virion">Virion</span>
+                            <span class="tag" data-i18n="tag.plugin">Plugin Development</span>
+                            <span class="tag" data-i18n="tag.bedrock">Minecraft Bedrock</span>
+                            <span class="tag" data-i18n="tag.telegram">Telegram Bot API</span>
+                        </div>
+                    </div>
+
+                    <div class="card about-card reveal">
+                        <h3 data-i18n="about.card2.title">Quick Info</h3>
+
+                        <div class="info-list">
+                            <div class="info-item"><span data-i18n="about.info.name">Name</span><b data-i18n="about.info.nameValue">Amir</b></div>
+                            <div class="info-item"><span data-i18n="about.info.nickname">Nickname</span><b class="en">Amirxd</b></div>
+                            <div class="info-item"><span data-i18n="about.info.age">Age</span><b data-i18n="about.info.ageValue">15 years</b></div>
+                            <div class="info-item"><span data-i18n="about.info.experience">Experience</span><b data-i18n="about.info.experienceValue">About 2.5 years</b></div>
+                            <div class="info-item"><span data-i18n="about.info.focus">Main Focus</span><b class="en">PocketMine-MP 5</b></div>
+                            <div class="info-item"><span data-i18n="about.info.language">Main Language</span><b class="en">PHP</b></div>
+                            <div class="info-item"><span data-i18n="about.info.status">Status</span><b data-i18n="about.info.statusValue">Available for projects</b></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="skills">
+            <div class="container">
+                <div class="section-head reveal">
+                    <span class="section-tag" data-i18n="skills.tag">SKILLS</span>
+                    <h2 data-i18n="skills.title">Skills</h2>
+                    <p data-i18n="skills.subtitle">Skills I've used in real projects — and keep sharpening.</p>
+                </div>
+
+                <div class="bento reveal">
+                    <div class="card skill featured span-5">
+                        <div class="skill-top"><b data-i18n="skill.pmmp">PocketMine-MP 5</b><span class="skill-num" data-count="88" data-suffix="%">0%</span></div>
+                        <div class="bar"><span data-width="88%"></span></div>
+                        <small data-i18n="skill.pmmp.label">Plugin development</small>
+                        <p class="skill-desc" data-i18n="skill.pmmp.desc">Events, forms, tasks, worlds and packets — the full PMMP5 API in real projects.</p>
+                    </div>
+
+                    <div class="card skill span-4">
+                        <div class="skill-top"><b data-i18n="skill.php">PHP 8</b><span class="skill-num" data-count="86" data-suffix="%">0%</span></div>
+                        <div class="bar"><span data-width="86%"></span></div>
+                        <small data-i18n="skill.php.label">Main language</small>
+                    </div>
+
+                    <div class="card skill span-3">
+                        <div class="skill-top"><b data-i18n="skill.virion">Virion Development</b><span class="skill-num" data-count="82" data-suffix="%">0%</span></div>
+                        <div class="bar"><span data-width="82%"></span></div>
+                        <small data-i18n="skill.virion.label">Library development</small>
+                    </div>
+
+                    <div class="card skill span-3">
+                        <div class="skill-top"><b data-i18n="skill.oop">OOP</b><span class="skill-num" data-count="80" data-suffix="%">0%</span></div>
+                        <div class="bar"><span data-width="80%"></span></div>
+                        <small data-i18n="skill.oop.label">Object-oriented</small>
+                    </div>
+
+                    <div class="card skill span-4">
+                        <div class="skill-top"><b data-i18n="skill.async">Async / Tasks</b><span class="skill-num" data-count="78" data-suffix="%">0%</span></div>
+                        <div class="bar"><span data-width="78%"></span></div>
+                        <small data-i18n="skill.async.label">Async processing</small>
+                    </div>
+
+                    <div class="card skill span-5">
+                        <div class="skill-top"><b data-i18n="skill.http">HTTP APIs</b><span class="skill-num" data-count="80" data-suffix="%">0%</span></div>
+                        <div class="bar"><span data-width="80%"></span></div>
+                        <small data-i18n="skill.http.label">API integration</small>
+                    </div>
+
+                    <div class="card skill span-4">
+                        <div class="skill-top"><b data-i18n="skill.telegram">Telegram Bot API</b><span class="skill-num" data-count="76" data-suffix="%">0%</span></div>
+                        <div class="bar"><span data-width="76%"></span></div>
+                        <small data-i18n="skill.telegram.label">Telegram bot</small>
+                    </div>
+
+                    <div class="card skill span-4">
+                        <div class="skill-top"><b data-i18n="skill.git">Git / GitHub</b><span class="skill-num" data-count="79" data-suffix="%">0%</span></div>
+                        <div class="bar"><span data-width="79%"></span></div>
+                        <small data-i18n="skill.git.label">Project management</small>
+                    </div>
+
+                    <div class="card skill span-4">
+                        <div class="skill-top"><b data-i18n="skill.solve">Problem Solving</b><span class="skill-num" data-count="84" data-suffix="%">0%</span></div>
+                        <div class="bar"><span data-width="84%"></span></div>
+                        <small data-i18n="skill.solve.label">Debugging &amp; logic</small>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="libraries">
+            <div class="container">
+                <div class="section-head reveal">
+                    <span class="section-tag" data-i18n="libraries.tag">OPEN SOURCE</span>
+                    <h2 data-i18n="libraries.title">My Libraries</h2>
+                    <p data-i18n-html="libraries.subtitle">
+                        Two public libraries for the <span class="en">PocketMine-MP 5</span> ecosystem — built to make developers' lives easier.
+                    </p>
+                </div>
+
+                <div class="libs-grid">
+                    <article class="card reveal">
+                        <div class="lib-head">
+                            <div class="card-icon">⚡</div>
+                            <div>
+                                <div class="small-en">PMMP-UltraRequest</div>
+                                <h3 class="en" style="margin-bottom:0;">UltraRequest</h3>
+                            </div>
+                            <span class="lib-badge" data-i18n="libraries.featured">Flagship</span>
+                        </div>
+
+                        <p data-i18n-html="libraries.ultraRequest.desc">
+                            A powerful, fluent HTTP client Virion for PocketMine-MP 5 — sync/async requests,
+                            authentication, cookies, proxies, file downloads and more, with minimal boilerplate.
+                        </p>
+
+                        <div class="tags">
+                            <span class="tag" data-i18n="tag.php">PHP</span>
+                            <span class="tag" data-i18n="tag.pmmp5">PocketMine-MP 5</span>
+                            <span class="tag" data-i18n="tag.virion">Virion</span>
+                            <span class="tag" data-i18n="tag.http">HTTP Client</span>
+                        </div>
+
+                        <div class="repo-stats">
+                            <span id="stars-PMMP-UltraRequest">★ ...</span>
+                            <span id="forks-PMMP-UltraRequest">Forks ...</span>
+                            <span>PHP 100%</span>
+                        </div>
+
+                        <div class="clone">
+                            <code>git clone https://github.com/amirxdcy4455/PMMP-UltraRequest.git</code>
+                            <button class="copy-btn" type="button" data-copy="https://github.com/amirxdcy4455/PMMP-UltraRequest.git" data-toast="toast.clone" aria-label="Copy clone URL">⧉</button>
+                        </div>
+
+                        <a class="card-link" href="https://github.com/amirxdcy4455/PMMP-UltraRequest" target="_blank" rel="noopener noreferrer" data-i18n="libraries.openRepo">Open Repository →</a>
+                    </article>
+
+                    <article class="card reveal">
+                        <div class="lib-head">
+                            <div class="card-icon">📨</div>
+                            <div>
+                                <div class="small-en">PMMPTelegram</div>
+                                <h3 class="en" style="margin-bottom:0;">PMMPTelegram</h3>
+                            </div>
+                        </div>
+
+                        <p data-i18n-html="libraries.pmmptelegram.desc">
+                            A powerful, fluent Telegram Bot API Virion for PocketMine-MP 5 — build Telegram bots
+                            for your PocketMine server with async, fluent calls: messages, updates and full API access.
+                        </p>
+
+                        <div class="tags">
+                            <span class="tag" data-i18n="tag.php">PHP</span>
+                            <span class="tag" data-i18n="tag.pmmp5">PocketMine-MP 5</span>
+                            <span class="tag" data-i18n="tag.virion">Virion</span>
+                            <span class="tag" data-i18n="tag.telegram">Telegram Bot API</span>
+                        </div>
+
+                        <div class="repo-stats">
+                            <span id="stars-PMMPTelegram">★ ...</span>
+                            <span id="forks-PMMPTelegram">Forks ...</span>
+                            <span>PHP 100%</span>
+                        </div>
+
+                        <div class="clone">
+                            <code>git clone https://github.com/amirxdcy4455/PMMPTelegram.git</code>
+                            <button class="copy-btn" type="button" data-copy="https://github.com/amirxdcy4455/PMMPTelegram.git" data-toast="toast.clone" aria-label="Copy clone URL">⧉</button>
+                        </div>
+
+                        <a class="card-link" href="https://github.com/amirxdcy4455/PMMPTelegram" target="_blank" rel="noopener noreferrer" data-i18n="libraries.openRepo">Open Repository →</a>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section id="projects">
+            <div class="container">
+                <div class="section-head reveal">
+                    <span class="section-tag" data-i18n="projects.tag">PROJECTS</span>
+                    <h2 data-i18n="projects.title">All Projects</h2>
+                    <p data-i18n="projects.subtitle">Everything I've built — loaded live from my GitHub, always up to date.</p>
+                </div>
+
+                <div class="repo-toolbar reveal">
+                    <div class="repo-filters">
+                        <button class="repo-filter active" type="button" data-filter="all" data-i18n="projects.filter.all">All</button>
+                        <button class="repo-filter" type="button" data-filter="original" data-i18n="projects.filter.original">Original</button>
+                        <button class="repo-filter" type="button" data-filter="fork" data-i18n="projects.filter.fork">Forks</button>
+                    </div>
+                    <div class="repo-count" id="repoCount"></div>
+                </div>
+
+                <div class="repo-grid reveal" id="repoGrid">
+                    <div class="repo-loading" data-i18n="projects.loading">Loading repositories...</div>
+                </div>
+
+                <div class="repo-more reveal">
+                    <a class="btn btn-ghost" href="https://github.com/amirxdcy4455?tab=repositories" target="_blank" rel="noopener noreferrer" data-i18n="projects.viewAll">View all on GitHub →</a>
+                </div>
+
+                <article class="card banner-card reveal">
+                    <div class="card-icon">🧩</div>
+                    <div class="banner-text">
+                        <h3 data-i18n="projects.custom.title">Need a custom plugin?</h3>
+                        <p data-i18n-html="projects.custom.desc">
+                            I build custom plugins for <span class="en">PocketMine-MP</span> servers — economy systems, minigames,
+                            server management, forms, databases and external API integrations.
+                        </p>
+                    </div>
+                    <a class="btn btn-primary" href="#contact" data-i18n="projects.banner.cta">Let's Talk</a>
+                </article>
+            </div>
+        </section>
+
+        <section id="contact">
+            <div class="container">
+                <div class="contact-box reveal">
+                    <span class="section-tag" data-i18n="contact.tag">CONTACT</span>
+                    <h2 data-i18n="contact.title">Let's build something awesome together</h2>
+
+                    <p data-i18n-html="contact.desc">
+                        Need a custom plugin, a library, an API integration, a Telegram bot or any server-side tool
+                        for your <span class="en">PocketMine-MP</span> server? Reach me on any of these platforms.
+                    </p>
+
+                    <div class="contact-buttons">
+                        <a class="btn btn-primary" href="https://github.com/amirxdcy4455" target="_blank" rel="noopener noreferrer" data-i18n="contact.github">GitHub</a>
+                        <a class="btn btn-ghost" href="https://t.me/amirxdcy" target="_blank" rel="noopener noreferrer" data-i18n="contact.telegram">Telegram</a>
+                        <!-- <a class="btn btn-ghost" href="https://rubika.ir/amirxdxp" target="_blank" rel="noopener noreferrer" data-i18n="contact.rubika">Rubika</a> -->
+                        <button class="btn btn-ghost" type="button" data-copy="amirxdcy4455" data-toast="toast.discord" data-i18n="contact.discord">Discord</button>
+                    </div>
+
+                    <div class="contact-note" data-i18n="contact.discordNote">Click the Discord button to copy my username.</div>
+
+                    <div class="contact-ids">
+                        <div class="contact-id">
+                            <span data-i18n="contact.ids.telegram">Telegram</span>
+                            <b>@amirxdcy</b>
+                            <a class="id-action" href="https://t.me/amirxdcy" target="_blank" rel="noopener noreferrer" data-i18n="contact.open">Open</a>
+                        </div>
+                        <div class="contact-id">
+                            <span data-i18n="contact.ids.rubika">Rubika</span>
+                            <b>@amirxdxp</b>
+                            <!-- <a class="id-action" href="https://rubika.ir/amirxdxp" target="_blank" rel="noopener noreferrer" data-i18n="contact.open">Open</a> -->
+                        </div>
+                        <div class="contact-id">
+                            <span data-i18n="contact.ids.discord">Discord</span>
+                            <b>amirxdcy4455</b>
+                            <button class="id-action" type="button" data-copy="amirxdcy4455" data-toast="toast.discord" data-i18n="contact.copy">Copy</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>
+                © <span id="year"></span> <span class="en">Amirxd</span> —
+                <span data-i18n="footer.made">Made with</span>
+                <span class="heart">❤</span>
+                <span data-i18n="footer.php">and PHP</span>
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        const translations = {
+            en: {
+                "meta.title": `Amirxd — PocketMine-MP 5 Plugin Developer`,
+
+                "nav.home": `Home`,
+                "nav.about": `About`,
+                "nav.skills": `Skills`,
+                "nav.libraries": `Libraries`,
+                "nav.projects": `Projects`,
+                "nav.contact": `Contact`,
+                "nav.github": `GitHub`,
+
+                "hero.kicker": `POCKETMINE-MP 5 // PLUGIN DEVELOPER`,
+                "hero.badge": `Available for new projects`,
+                "hero.title": `Hi, I'm <span class="hl">Amir</span><br>known as <span class="hl en">Amirxd</span>`,
+                "hero.desc": `PocketMine-MP 5 plugin developer with about <b>2.5 years</b> of experience. I build useful plugins and libraries for <span class="en">Minecraft Bedrock</span> servers — <span class="en">HTTP clients</span>, <span class="en">Telegram bots</span>, economy systems, minigames and server-side tools.`,
+                "hero.viewLibraries": `View Libraries`,
+                "hero.github": `GitHub Profile`,
+                "hero.order": `Order Project`,
+                "hero.stat.age": `Age / Level`,
+                "hero.stat.experience": `Years Experience`,
+                "hero.stat.libraries": `Public Libraries`,
+                "hero.stat.focus": `Main Focus`,
+
+                "about.tag": `ABOUT ME`,
+                "about.title": `About Me`,
+                "about.subtitle": `I'm Amir — a <span class="en">PocketMine-MP</span> plugin developer who, despite his young age, takes real, clean and useful projects seriously.`,
+                "about.card1.title": `Who is <span class="en">Amirxd</span>?`,
+                "about.card1.p1": `I've been active in the <span class="en">PocketMine-MP</span> ecosystem for about 2.5 years. My main focus is custom plugins, reusable libraries, communication tools like <span class="en">HTTP clients</span> and the <span class="en">Telegram Bot API</span>, and server-side systems.`,
+                "about.card1.p2": `I may not call myself a full specialist yet — but in practice I'm serious about clean code, problem solving, modular structure and actually usable projects. My goal is simple: build tools that <span class="en">PMMP</span> developers really benefit from.`,
+                "about.card2.title": `Quick Info`,
+                "about.info.name": `Name`,
+                "about.info.nameValue": `Amir`,
+                "about.info.nickname": `Nickname`,
+                "about.info.age": `Age`,
+                "about.info.ageValue": `15 years`,
+                "about.info.experience": `Experience`,
+                "about.info.experienceValue": `About 2.5 years`,
+                "about.info.focus": `Main Focus`,
+                "about.info.language": `Main Language`,
+                "about.info.status": `Status`,
+                "about.info.statusValue": `Available for projects`,
+
+                "tag.php": `PHP`,
+                "tag.pmmp5": `PocketMine-MP 5`,
+                "tag.virion": `Virion`,
+                "tag.plugin": `Plugin Development`,
+                "tag.bedrock": `Minecraft Bedrock`,
+                "tag.telegram": `Telegram Bot API`,
+                "tag.http": `HTTP Client`,
+                "tag.economy": `Economy`,
+                "tag.trading": `Trading`,
+                "tag.minigame": `Minigame`,
+                "tag.minecraft": `Minecraft`,
+                "tag.custom": `Custom Plugins`,
+                "tag.forms": `Forms`,
+                "tag.database": `Database`,
+
+                "skills.tag": `SKILLS`,
+                "skills.title": `Skills`,
+                "skills.subtitle": `Skills I've used in real projects — and keep sharpening.`,
+                "skill.pmmp": `PocketMine-MP 5`,
+                "skill.pmmp.label": `Plugin development`,
+                "skill.pmmp.desc": `Events, forms, tasks, worlds and packets — the full PMMP5 API in real projects.`,
+                "skill.php": `PHP 8`,
+                "skill.php.label": `Main language`,
+                "skill.virion": `Virion Development`,
+                "skill.virion.label": `Library development`,
+                "skill.oop": `OOP`,
+                "skill.oop.label": `Object-oriented`,
+                "skill.async": `Async / Tasks`,
+                "skill.async.label": `Async processing`,
+                "skill.http": `HTTP APIs`,
+                "skill.http.label": `API integration`,
+                "skill.telegram": `Telegram Bot API`,
+                "skill.telegram.label": `Telegram bot`,
+                "skill.git": `Git / GitHub`,
+                "skill.git.label": `Project management`,
+                "skill.solve": `Problem Solving`,
+                "skill.solve.label": `Debugging & logic`,
+
+                "libraries.tag": `OPEN SOURCE`,
+                "libraries.title": `My Libraries`,
+                "libraries.subtitle": `Two public libraries for the <span class="en">PocketMine-MP 5</span> ecosystem — built to make developers' lives easier.`,
+                "libraries.featured": `Flagship`,
+                "libraries.ultraRequest.desc": `A powerful, fluent HTTP client Virion for PocketMine-MP 5 — sync/async requests, authentication, cookies, proxies, file downloads and more, with minimal boilerplate.`,
+                "libraries.pmmptelegram.desc": `A powerful, fluent Telegram Bot API Virion for PocketMine-MP 5 — build Telegram bots for your PocketMine server with async, fluent calls: messages, updates and full API access.`,
+                "libraries.openRepo": `Open Repository →`,
+                "libraries.forks": `Forks`,
+
+                "projects.tag": `PROJECTS`,
+                "projects.title": `All Projects`,
+                "projects.subtitle": `Everything I've built — loaded live from my GitHub, always up to date.`,
+                "projects.filter.all": `All`,
+                "projects.filter.original": `Original`,
+                "projects.filter.fork": `Forks`,
+                "projects.loading": `Loading repositories...`,
+                "projects.empty": `Nothing here yet.`,
+                "projects.viewAll": `View all on GitHub →`,
+                "projects.projectsWord": `projects`,
+                "projects.updated": `Updated`,
+                "projects.forkBadge": `Fork`,
+                "projects.open": `Open →`,
+                "projects.noDesc": `No description provided.`,
+                "projects.custom.title": `Need a custom plugin?`,
+                "projects.custom.desc": `I build custom plugins for <span class="en">PocketMine-MP</span> servers — economy systems, minigames, server management, forms, databases and external API integrations.`,
+                "projects.banner.cta": `Let's Talk`,
+
+                "contact.tag": `CONTACT`,
+                "contact.title": `Let's build something awesome together`,
+                "contact.desc": `Need a custom plugin, a library, an API integration, a Telegram bot or any server-side tool for your <span class="en">PocketMine-MP</span> server? Reach me on any of these platforms.`,
+                "contact.github": `GitHub`,
+                "contact.telegram": `Telegram`,
+                "contact.rubika": `Rubika`,
+                "contact.discord": `Discord`,
+                "contact.discordNote": `Click the Discord button to copy my username.`,
+                "contact.ids.telegram": `Telegram`,
+                "contact.ids.rubika": `Rubika`,
+                "contact.ids.discord": `Discord`,
+                "contact.open": `Open`,
+                "contact.copy": `Copy`,
+
+                "footer.made": `Made with`,
+                "footer.php": `and PHP`,
+
+                "toast.discord": `Discord username copied!`,
+                "toast.clone": `Clone URL copied!`,
+                "toast.god": `⚡ GOD MODE ACTIVATED ⚡`
+            },
+
+            fa: {
+                "meta.title": `Amirxd — توسعه‌دهنده پلاگین PocketMine-MP 5`,
+
+                "nav.home": `خانه`,
+                "nav.about": `درباره من`,
+                "nav.skills": `مهارت‌ها`,
+                "nav.libraries": `کتابخانه‌ها`,
+                "nav.projects": `پروژه‌ها`,
+                "nav.contact": `تماس`,
+                "nav.github": `گیت‌هاب`,
+
+                "hero.kicker": ``,
+                "hero.badge": `آماده پروژه‌های جدید`,
+                "hero.title": `من <span class="hl">امیر</span> هستم<br>معروف به <span class="hl en">Amirxd</span>`,
+                "hero.desc": `توسعه‌دهنده پلاگین‌های <span class="en">PocketMine-MP 5</span> با حدود <b>۲ سال و نیم</b> تجربه. من پلاگین‌ها و کتابخانه‌های کاربردی برای سرورهای <span class="en">Minecraft Bedrock</span> می‌سازم — <span class="en">HTTP Client</span>، <span class="en">ربات تلگرام</span>، سیستم‌های اقتصادی، مینی‌گیم و ابزارهای سمت سرور.`,
+                "hero.viewLibraries": `مشاهده کتابخانه‌ها`,
+                "hero.github": `پروفایل GitHub`,
+                "hero.order": `سفارش پروژه`,
+                "hero.stat.age": `سن / سطح`,
+                "hero.stat.experience": `سال تجربه`,
+                "hero.stat.libraries": `کتابخانه عمومی`,
+                "hero.stat.focus": `تمرکز اصلی`,
+
+                "about.tag": `درباره من`,
+                "about.title": `درباره من`,
+                "about.subtitle": `من امیر هستم — یک توسعه‌دهنده پلاگین <span class="en">PocketMine-MP</span> که با وجود سن کم، روی پروژه‌های واقعی، تمیز و کاربردی جدی کار می‌کنم.`,
+                "about.card1.title": `<span class="en">Amirxd</span> کیست؟`,
+                "about.card1.p1": `من حدود ۲ سال و نیم است که در حوزه <span class="en">PocketMine-MP</span> فعالیت می‌کنم. تمرکز اصلی من روی ساخت پلاگین‌های سفارشی، کتابخانه‌های قابل استفاده مجدد، ابزارهای ارتباطی مثل <span class="en">HTTP Client</span> و <span class="en">Telegram Bot API</span> و سیستم‌های سمت سرور است.`,
+                "about.card1.p2": `شاید خودم را هنوز یک متخصص تمام‌عیار ندانم — اما در عمل روی کد تمیز، حل مسئله، ساختار ماژولار و پروژه‌های واقعاً قابل استفاده جدی هستم. هدفم ساده است: ساخت ابزارهایی که توسعه‌دهنده‌های <span class="en">PMMP</span> واقعاً از آن‌ها سود ببرند.`,
+                "about.card2.title": `اطلاعات سریع`,
+                "about.info.name": `نام`,
+                "about.info.nameValue": `امیر`,
+                "about.info.nickname": `نام مستعار`,
+                "about.info.age": `سن`,
+                "about.info.ageValue": `۱۵ سال`,
+                "about.info.experience": `تجربه`,
+                "about.info.experienceValue": `حدود ۲ سال و نیم`,
+                "about.info.focus": `حوزه اصلی`,
+                "about.info.language": `زبان اصلی`,
+                "about.info.status": `وضعیت`,
+                "about.info.statusValue": `آماده پروژه و همکاری`,
+
+                "tag.php": `PHP`,
+                "tag.pmmp5": `PocketMine-MP 5`,
+                "tag.virion": `Virion`,
+                "tag.plugin": `توسعه پلاگین`,
+                "tag.bedrock": `Minecraft Bedrock`,
+                "tag.telegram": `API ربات تلگرام`,
+                "tag.http": `HTTP Client`,
+                "tag.economy": `اقتصاد`,
+                "tag.trading": `معاملاتی`,
+                "tag.minigame": `مینی‌گیم`,
+                "tag.minecraft": `Minecraft`,
+                "tag.custom": `پلاگین سفارشی`,
+                "tag.forms": `فرم‌ها`,
+                "tag.database": `دیتابیس`,
+
+                "skills.tag": `مهارت‌ها`,
+                "skills.title": `مهارت‌ها`,
+                "skills.subtitle": `مهارت‌هایی که در پروژه‌های واقعی استفاده کرده‌ام — و مدام در حال تیزتر کردنشان هستم.`,
+                "skill.pmmp": `PocketMine-MP 5`,
+                "skill.pmmp.label": `توسعه پلاگین`,
+                "skill.pmmp.desc": `ایونت‌ها، فرم‌ها، تسک‌ها، دنیاها و پکت‌ها — کل API نسخه ۵ در پروژه‌های واقعی.`,
+                "skill.php": `PHP 8`,
+                "skill.php.label": `زبان اصلی`,
+                "skill.virion": `توسعه Virion`,
+                "skill.virion.label": `کتابخانه‌سازی`,
+                "skill.oop": `OOP`,
+                "skill.oop.label": `شیءگرایی`,
+                "skill.async": `Async / Tasks`,
+                "skill.async.label": `پردازش غیرهمزمان`,
+                "skill.http": `HTTP APIs`,
+                "skill.http.label": `ارتباط با سرویس‌ها`,
+                "skill.telegram": `Telegram Bot API`,
+                "skill.telegram.label": `ربات تلگرام`,
+                "skill.git": `Git / GitHub`,
+                "skill.git.label": `مدیریت پروژه`,
+                "skill.solve": `حل مسئله`,
+                "skill.solve.label": `دیباگ و منطق`,
+
+                "libraries.tag": `متن‌باز`,
+                "libraries.title": `کتابخانه‌های من`,
+                "libraries.subtitle": `دو کتابخانه عمومی برای اکوسیستم <span class="en">PocketMine-MP 5</span> — ساخته‌شده برای ساده‌تر کردن کار توسعه‌دهنده‌ها.`,
+                "libraries.featured": `کتابخانه اصلی`,
+                "libraries.ultraRequest.desc": `یک کلاینت <span class="en">HTTP</span> قدرتمند و روان برای <span class="en">PMMP5</span> — درخواست‌های <span class="en">sync/async</span>، احراز هویت، کوکی‌ها، پروکسی، دانلود فایل و امکانات بیشتر با کمترین <span class="en">boilerplate</span>.`,
+                "libraries.pmmptelegram.desc": `یک کتابخانه قدرتمند و روان برای <span class="en">Telegram Bot API</span> در <span class="en">PMMP5</span> — با کال‌های <span class="en">async</span> و <span class="en">fluent</span> برای سرورت ربات تلگرام بساز: پیام‌ها، آپدیت‌ها و دسترسی کامل به API.`,
+                "libraries.openRepo": `مشاهده در GitHub ←`,
+                "libraries.forks": `فورک`,
+
+                "projects.tag": `پروژه‌ها`,
+                "projects.title": `همه پروژه‌ها`,
+                "projects.subtitle": `هر چیزی که ساخته‌ام — به‌صورت زنده از GitHub من، همیشه به‌روز.`,
+                "projects.filter.all": `همه`,
+                "projects.filter.original": `اصلی`,
+                "projects.filter.fork": `فورک‌ها`,
+                "projects.loading": `در حال بارگذاری ریپازیتوری‌ها...`,
+                "projects.empty": `هنوز چیزی اینجا نیست.`,
+                "projects.viewAll": `مشاهده همه در GitHub ←`,
+                "projects.projectsWord": `پروژه`,
+                "projects.updated": `به‌روزرسانی`,
+                "projects.forkBadge": `فورک`,
+                "projects.open": `مشاهده ←`,
+                "projects.noDesc": `بدون توضیح.`,
+                "projects.custom.title": `پلاگین سفارشی می‌خوای؟`,
+                "projects.custom.desc": `من برای سرورهای <span class="en">PocketMine-MP</span> پلاگین سفارشی می‌سازم — سیستم‌های اقتصادی، مینی‌گیم، مدیریت سرور، فرم‌ها، دیتابیس و اتصال به APIهای خارجی.`,
+                "projects.banner.cta": `بیا صحبت کنیم`,
+
+                "contact.tag": `تماس`,
+                "contact.title": `بیا با هم یک پروژه خفن بسازیم`,
+                "contact.desc": `برای سرور <span class="en">PocketMine-MP</span> خودت به پلاگین سفارشی، کتابخانه، اتصال به API، ربات تلگرام یا هر ابزار سمت سرور نیاز داری؟ از هر کدوم از این راه‌ها می‌تونی بهم پیام بدی.`,
+                "contact.github": `GitHub`,
+                "contact.telegram": `تلگرام`,
+                "contact.rubika": `روبیکا`,
+                "contact.discord": `دیسکورد`,
+                "contact.discordNote": `برای کپی کردن یوزرنیم، روی دکمه دیسکورد بزن.`,
+                "contact.ids.telegram": `تلگرام`,
+                "contact.ids.rubika": `روبیکا`,
+                "contact.ids.discord": `دیسکورد`,
+                "contact.open": `باز کردن`,
+                "contact.copy": `کپی`,
+
+                "footer.made": `ساخته‌شده با`,
+                "footer.php": `و PHP`,
+
+                "toast.discord": `آیدی دیسکورد کپی شد!`,
+                "toast.clone": `لینک Clone کپی شد!`,
+                "toast.god": `⚡ حالت GOD فعال شد ⚡`
+            }
+        };
+
+        const typedWords = {
+            en: [
+                "PocketMine-MP Plugin Developer",
+                "PHP Developer",
+                "PMMP5 Virion Creator",
+                "Minecraft Bedrock Tooling",
+                "Amirxd"
+            ],
+            fa: [
+                "توسعه‌دهنده پلاگین PocketMine-MP",
+                "توسعه‌دهنده PHP",
+                "سازنده Virion برای PMMP5",
+                "ابزارسازی Minecraft Bedrock",
+                "Amirxd"
+            ]
+        };
+
+        const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+        const GITHUB_USER = "amirxdcy4455";
+        const FEATURED_LIBS = ["PMMP-UltraRequest", "PMMPTelegram"];
+
+        const FALLBACK_REPOS = [
+            { name: "UltraRequest", description: "A powerful HTTP client library for PHP", language: "PHP", stargazers_count: 0, forks_count: 0, fork: false, topics: [], updated_at: "2026-07-08T14:14:30Z", html_url: "https://github.com/amirxdcy4455/UltraRequest" },
+            { name: "UltraForms", description: "Ultimate Form System for PocketMine-MP", language: "PHP", stargazers_count: 0, forks_count: 0, fork: false, topics: ["minecraft-bedrock", "pocketmine", "pocketmine-mp-5", "pocketmine-plugins"], updated_at: "2026-05-31T22:05:06Z", html_url: "https://github.com/amirxdcy4455/UltraForms" },
+            { name: "Pillars-Of-Fortune", description: "Minigame Pillars Of Fortune Made For Pocketmine Api 5", language: "PHP", stargazers_count: 0, forks_count: 0, fork: true, topics: [], updated_at: "2026-06-28T20:20:56Z", html_url: "https://github.com/amirxdcy4455/Pillars-Of-Fortune" },
+            { name: "UltraClearLag", description: "The Best Clear Lag Plugin in Pocketmine mp5", language: "PHP", stargazers_count: 0, forks_count: 0, fork: false, topics: [], updated_at: "2026-01-01T19:34:51Z", html_url: "https://github.com/amirxdcy4455/UltraClearLag" },
+            { name: "TradeSystem", description: "A PocketMine-MP cryptocurrency trading plugin with real-time markets, digital wallets, and dynamic pricing simulation.", language: "PHP", stargazers_count: 0, forks_count: 0, fork: false, topics: ["pocketmine", "pocketmine-mp-5", "pocketmine-plugins"], updated_at: "2025-12-11T17:36:26Z", html_url: "https://github.com/amirxdcy4455/TradeSystem" },
+            { name: "ServerInfo", description: "A comprehensive PocketMine-MP plugin that provides detailed server information through commands and a developer-friendly API for other plugins", language: "PHP", stargazers_count: 0, forks_count: 0, fork: false, topics: [], updated_at: "2025-11-29T17:39:51Z", html_url: "https://github.com/amirxdcy4455/ServerInfo" },
+            { name: "Welcome-Message-Plugin", description: "Advanced Welcome Message Plugin for Pocketmine mp5", language: "PHP", stargazers_count: 2, forks_count: 1, fork: false, topics: [], updated_at: "2025-11-29T16:55:27Z", html_url: "https://github.com/amirxdcy4455/Welcome-Message-Plugin" },
+            { name: "EasyUI", description: "📖 An intuitive and easy-to-use form library for PocketMine-MP", language: "PHP", stargazers_count: 0, forks_count: 0, fork: true, topics: [], updated_at: "2025-11-29T16:24:35Z", html_url: "https://github.com/amirxdcy4455/EasyUI" }
+        ];
+
+        function getSavedLanguage() {
+            try { return localStorage.getItem("lang"); } catch (e) { return null; }
+        }
+        function saveLanguage(lang) {
+            try { localStorage.setItem("lang", lang); } catch (e) {}
+        }
+
+        let currentLang = getSavedLanguage() || "en";
+        let repoStats = {};
+        let allRepos = [];
+        let reposLoaded = false;
+        let currentFilter = "all";
+
+        function t(key) {
+            return translations[currentLang][key] || translations.en[key] || key;
+        }
+
+        function escapeHtml(str) {
+            return String(str).replace(/[&<>"']/g, c => ({
+                "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+            }[c]));
+        }
+
+        const langColors = { PHP: "#777BB4", JavaScript: "#f1e05a", HTML: "#e34c26", CSS: "#563d7c", TypeScript: "#3178c6" };
+
+        function formatDate(iso) {
+            try {
+                return new Date(iso).toLocaleDateString(currentLang === "fa" ? "fa-IR" : "en-US", {
+                    year: "numeric", month: "short", day: "numeric"
+                });
+            } catch (e) { return ""; }
+        }
+
+        function renderRepos(filter) {
+            currentFilter = filter || currentFilter;
+            const grid = document.getElementById("repoGrid");
+            const countEl = document.getElementById("repoCount");
+            if (!grid) return;
+
+            if (!reposLoaded) {
+                grid.innerHTML = `<div class="repo-loading">${escapeHtml(t("projects.loading"))}</div>`;
+                if (countEl) countEl.textContent = "";
+                return;
+            }
+
+            let list = allRepos.slice();
+            if (currentFilter === "original") list = list.filter(r => !r.fork);
+            if (currentFilter === "fork") list = list.filter(r => r.fork);
+
+            if (countEl) countEl.textContent = `${list.length} ${t("projects.projectsWord")}`;
+
+            if (list.length === 0) {
+                grid.innerHTML = `<div class="repo-loading">${escapeHtml(t("projects.empty"))}</div>`;
+                return;
+            }
+
+            grid.innerHTML = list.map(r => {
+                const desc = r.description ? escapeHtml(r.description) : escapeHtml(t("projects.noDesc"));
+                const topics = (r.topics || []).slice(0, 4).map(tp => `<span class="tag">${escapeHtml(tp)}</span>`).join("");
+                const forkBadge = r.fork ? `<span class="repo-fork-badge">${escapeHtml(t("projects.forkBadge"))}</span>` : "";
+                const langDot = r.language ? `<span class="repo-lang"><i class="lang-dot" style="background:${langColors[r.language] || "var(--aqua)"}"></i>${escapeHtml(r.language)}</span>` : "";
+                const updated = r.updated_at ? `<span class="repo-updated">${escapeHtml(t("projects.updated"))} ${formatDate(r.updated_at)}</span>` : "";
+                return `
+                    <article class="card repo-card">
+                        <div class="repo-top">
+                            <div class="repo-name en">${escapeHtml(r.name)}</div>
+                            ${forkBadge}
+                        </div>
+                        <p class="repo-desc">${desc}</p>
+                        <div class="repo-meta">
+                            ${langDot}
+                            <span>★ ${r.stars ?? 0}</span>
+                            <span>⑂ ${r.forks ?? 0}</span>
+                            ${updated}
+                        </div>
+                        ${topics ? `<div class="tags">${topics}</div>` : ""}
+                        <a class="card-link" href="${r.html_url}" target="_blank" rel="noopener noreferrer">${escapeHtml(t("projects.open"))}</a>
+                    </article>`;
+            }).join("");
+        }
+
+        async function loadAllRepos() {
+            let data = null;
+            try {
+                const res = await fetch(`https://api.github.com/users/${GITHUB_USER}/repos?per_page=100&sort=updated`);
+                if (res.ok) data = await res.json();
+            } catch (e) {}
+
+            if (!Array.isArray(data)) data = FALLBACK_REPOS;
+
+            allRepos = data
+                .filter(r => r && r.name && !FEATURED_LIBS.includes(r.name))
+                .map(r => ({
+                    name: r.name,
+                    description: r.description,
+                    language: r.language,
+                    stars: r.stargazers_count ?? r.stars ?? 0,
+                    forks: r.forks_count ?? r.forks ?? 0,
+                    fork: r.fork ?? false,
+                    topics: r.topics || [],
+                    updated_at: r.updated_at,
+                    html_url: r.html_url || `https://github.com/${GITHUB_USER}/${r.name}`
+                }))
+                .sort((a, b) => new Date(b.updated_at || 0) - new Date(a.updated_at || 0));
+
+            reposLoaded = true;
+            renderRepos(currentFilter);
+        }
+
+        document.querySelectorAll(".repo-filter").forEach(btn => {
+            btn.addEventListener("click", () => {
+                document.querySelectorAll(".repo-filter").forEach(b => b.classList.remove("active"));
+                btn.classList.add("active");
+                renderRepos(btn.getAttribute("data-filter"));
+            });
+        });
+
+        function applyLanguage(lang) {
+            currentLang = lang;
+            saveLanguage(lang);
+
+            document.documentElement.lang = lang;
+            document.documentElement.dir = lang === "fa" ? "rtl" : "ltr";
+
+            document.querySelectorAll("[data-i18n]").forEach(el => {
+                el.textContent = t(el.getAttribute("data-i18n"));
+            });
+            document.querySelectorAll("[data-i18n-html]").forEach(el => {
+                el.innerHTML = t(el.getAttribute("data-i18n-html"));
+            });
+
+            document.title = t("meta.title");
+            document.getElementById("langToggle").textContent = lang === "fa" ? "English" : "فارسی";
+
+            renderRepoStats();
+            renderRepos(currentFilter);
+            restartTyping();
+        }
+
+        document.getElementById("langToggle").addEventListener("click", () => {
+            applyLanguage(currentLang === "en" ? "fa" : "en");
+        });
+
+        const progressBar = document.getElementById("progressBar");
+        const toTop = document.getElementById("toTop");
+
+        window.addEventListener("scroll", () => {
+            const scrollTop = document.documentElement.scrollTop;
+            const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            progressBar.style.width = (scrollTop / scrollHeight) * 100 + "%";
+            toTop.classList.toggle("show", window.scrollY > 420);
+            spy();
+        }, { passive: true });
+
+        toTop.addEventListener("click", () => {
+            window.scrollTo({ top: 0, behavior: reducedMotion ? "auto" : "smooth" });
+        });
+
+        function animateCount(el, target, decimals, suffix) {
+            const duration = 1300;
+            const start = performance.now();
+            function step(now) {
+                const p = Math.min((now - start) / duration, 1);
+                const eased = 1 - Math.pow(1 - p, 3);
+                el.textContent = (target * eased).toFixed(decimals) + suffix;
+                if (p < 1) requestAnimationFrame(step);
+            }
+            requestAnimationFrame(step);
+        }
+
+        const revealObserver = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting) return;
+                entry.target.classList.add("active");
+
+                entry.target.querySelectorAll(".bar span").forEach(bar => {
+                    bar.style.width = bar.dataset.width || "0%";
+                });
+
+                entry.target.querySelectorAll("[data-count]").forEach(el => {
+                    if (el.dataset.done) return;
+                    el.dataset.done = "1";
+                    const target = parseFloat(el.dataset.count);
+                    const decimals = parseInt(el.dataset.decimals || "0", 10);
+                    const suffix = el.dataset.suffix || "";
+                    if (reducedMotion) {
+                        el.textContent = target.toFixed(decimals) + suffix;
+                    } else {
+                        animateCount(el, target, decimals, suffix);
+                    }
+                });
+            });
+        }, { threshold: 0.12 });
+
+        document.querySelectorAll(".reveal").forEach(el => revealObserver.observe(el));
+
+        const navLinks = Array.from(document.querySelectorAll(".nav-links a"));
+        const sectionIds = ["home", "about", "skills", "libraries", "projects", "contact"];
+
+        function spy() {
+            const pos = window.scrollY + 150;
+            let current = "home";
+            sectionIds.forEach(id => {
+                const s = document.getElementById(id);
+                if (s && s.offsetTop <= pos) current = id;
+            });
+            navLinks.forEach(a => {
+                a.classList.toggle("active", a.getAttribute("href") === "#" + current);
+            });
+        }
+
+        const typedElement = document.getElementById("typed");
+        let typingTimeout = null;
+        let wordIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+
+        function typeEffect() {
+            if (!typedElement) return;
+            const words = typedWords[currentLang] || typedWords.en;
+            const currentWord = words[wordIndex % words.length];
+
+            if (isDeleting) {
+                typedElement.textContent = currentWord.substring(0, charIndex - 1);
+                charIndex--;
+            } else {
+                typedElement.textContent = currentWord.substring(0, charIndex + 1);
+                charIndex++;
+            }
+
+            let speed = isDeleting ? 45 : 90;
+            if (!isDeleting && charIndex === currentWord.length) {
+                speed = 1600;
+                isDeleting = true;
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false;
+                wordIndex = (wordIndex + 1) % words.length;
+                speed = 350;
+            }
+            typingTimeout = setTimeout(typeEffect, speed);
+        }
+
+        function restartTyping() {
+            clearTimeout(typingTimeout);
+            wordIndex = 0;
+            charIndex = 0;
+            isDeleting = false;
+            if (typedElement) typedElement.textContent = "";
+            typeEffect();
+        }
+
+        const termBody = document.getElementById("termBody");
+        const terminalLines = [
+            { text: "$ ./start.sh", cls: "cmdline" },
+            { text: "[Server] Loading PocketMine-MP 5 ...", cls: "srv" },
+            { text: "[Server] Enabling UltraRequest v1.0.0", cls: "srv" },
+            { text: "[Server] Enabling PMMPTelegram v1.0.0", cls: "srv" },
+            { text: '[Server] Done (0.42s)! For help, type "help"', cls: "okline" },
+            { text: "$ whoami", cls: "cmdline" },
+            { text: "Amirxd — PMMP5 Plugin Developer", cls: "out-w" }
+        ];
+
+        function addTermCursor() {
+            const d = document.createElement("div");
+            d.className = "cmdline";
+            d.innerHTML = '$ <span class="cursor"></span>';
+            termBody.appendChild(d);
+        }
+
+        function typeTerminal() {
+            termBody.innerHTML = "";
+            if (reducedMotion) {
+                terminalLines.forEach(l => {
+                    const d = document.createElement("div");
+                    d.className = l.cls;
+                    d.textContent = l.text;
+                    termBody.appendChild(d);
+                });
+                addTermCursor();
+                return;
+            }
+            let li = 0;
+            function nextLine() {
+                if (li >= terminalLines.length) { addTermCursor(); return; }
+                const line = terminalLines[li];
+                const d = document.createElement("div");
+                d.className = line.cls;
+                termBody.appendChild(d);
+                let ci = 0;
+                const iv = setInterval(() => {
+                    d.textContent = line.text.slice(0, ++ci);
+                    if (ci >= line.text.length) {
+                        clearInterval(iv);
+                        li++;
+                        setTimeout(nextLine, 280);
+                    }
+                }, 22);
+            }
+            nextLine();
+        }
+
+        const canvas = document.getElementById("bgCanvas");
+        const ctx = canvas.getContext("2d");
+        let particles = [];
+        let width, height;
+
+        function resizeCanvas() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener("resize", resizeCanvas);
+
+        class Particle {
+            constructor() { this.reset(); }
+            reset() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.size = Math.random() * 2 + 0.4;
+                this.speedX = (Math.random() - 0.5) * 0.35;
+                this.speedY = (Math.random() - 0.5) * 0.35;
+                this.opacity = Math.random() * 0.5 + 0.12;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.x < 0 || this.x > width || this.y < 0 || this.y > height) this.reset();
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(34, 211, 238, ${this.opacity})`;
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            const count = window.innerWidth < 768 ? 35 : 75;
+            for (let i = 0; i < count; i++) particles.push(new Particle());
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, width, height);
+            particles.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animateParticles);
+        }
+
+        if (!reducedMotion) {
+            initParticles();
+            animateParticles();
+        }
+
+        function renderRepoStats() {
+            const repos = ["PMMP-UltraRequest", "PMMPTelegram"];
+            const forksLabel = t("libraries.forks");
+            repos.forEach(repo => {
+                const starsEl = document.getElementById(`stars-${repo}`);
+                const forksEl = document.getElementById(`forks-${repo}`);
+                if (!starsEl || !forksEl) return;
+                if (repoStats[repo]) {
+                    starsEl.textContent = `★ ${repoStats[repo].stars}`;
+                    forksEl.textContent = `${forksLabel} ${repoStats[repo].forks}`;
+                } else {
+                    starsEl.textContent = `★ ...`;
+                    forksEl.textContent = `${forksLabel} ...`;
+                }
+            });
+        }
+
+        async function loadRepoStats() {
+            const repos = ["PMMP-UltraRequest", "PMMPTelegram"];
+            for (const repo of repos) {
+                try {
+                    const response = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${repo}`);
+                    if (!response.ok) continue;
+                    const data = await response.json();
+                    if (typeof data.stargazers_count !== "undefined" && typeof data.forks_count !== "undefined") {
+                        repoStats[repo] = { stars: data.stargazers_count, forks: data.forks_count };
+                    }
+                } catch (e) {}
+            }
+            renderRepoStats();
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById("toast");
+            toast.textContent = message;
+            toast.classList.add("show");
+            clearTimeout(showToast._timer);
+            showToast._timer = setTimeout(() => toast.classList.remove("show"), 2200);
+        }
+
+        function copyText(text) {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                return navigator.clipboard.writeText(text);
+            }
+            return new Promise((resolve, reject) => {
+                const ta = document.createElement("textarea");
+                ta.value = text;
+                ta.style.position = "fixed";
+                ta.style.opacity = "0";
+                document.body.appendChild(ta);
+                ta.select();
+                try {
+                    document.execCommand("copy");
+                    resolve();
+                } catch (e) {
+                    reject(e);
+                } finally {
+                    ta.remove();
+                }
+            });
+        }
+
+        document.querySelectorAll("[data-copy]").forEach(btn => {
+            btn.addEventListener("click", async () => {
+                const value = btn.getAttribute("data-copy");
+                try {
+                    await copyText(value);
+                    showToast(t(btn.getAttribute("data-toast") || "toast.discord"));
+                } catch (e) {
+                    showToast(value);
+                }
+            });
+        });
+
+        const konami = ["ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowLeft", "ArrowRight", "b", "a"];
+        let kIdx = 0;
+        document.addEventListener("keydown", e => {
+            const key = e.key.length === 1 ? e.key.toLowerCase() : e.key;
+            if (key === konami[kIdx]) {
+                kIdx++;
+                if (kIdx === konami.length) {
+                    kIdx = 0;
+                    document.body.classList.add("overdrive");
+                    showToast(t("toast.god"));
+                    setTimeout(() => document.body.classList.remove("overdrive"), 5000);
+                }
+            } else {
+                kIdx = (key === konami[0]) ? 1 : 0;
+            }
+        });
+
+        document.getElementById("year").textContent = new Date().getFullYear();
+
+        applyLanguage(currentLang);
+        typeTerminal();
+        loadRepoStats();
+        loadAllRepos();
+        spy();
+    </script>
+
+</body>
+</html>
